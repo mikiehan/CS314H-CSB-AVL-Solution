@@ -28,12 +28,12 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
 
     @Override
     public void insert(E target) {
-        overallRoot = insert(target, overallRoot, true);
+        overallRoot = insert(new AvlNode<E>(target), overallRoot);
     }
 
     @Override
-    protected BinaryNode<E> insert(E target, BinaryNode<E> root, boolean useAvlNode) {
-        root = super.insert(target, root, useAvlNode);
+    protected BinaryNode<E> insert(BinaryNode<E> targetNode, BinaryNode<E> root) {
+        root = super.insert(targetNode, root);
         return balance((AvlNode<E>) root);
     }
 

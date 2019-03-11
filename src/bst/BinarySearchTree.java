@@ -68,22 +68,22 @@ public class BinarySearchTree<E extends Comparable<? super E>>
      * @param target the item to insert.
      */
     public void insert(E target) {
-        overallRoot = insert(target, overallRoot, false);
+        overallRoot = insert(new BinaryNode<E>(target), overallRoot);
     }
 
     /**
-     * @param target the data to insert
+     * @param targetNode the node to insert that has target data
      * @param root the node that roots the subtree
      * @return the new overallRoot of the subtree
      */
-    protected BinaryNode<E> insert(E target, BinaryNode<E> root, boolean useAvlNode){
+    protected BinaryNode<E> insert(BinaryNode<E> targetNode, BinaryNode<E> root){
         if(root == null) {
-            root = useAvlNode ? new AvlNode<E>(target) : new BinaryNode<E>(target);
+            root = targetNode;
         }
-        else if(target.compareTo(root.data) > 0)
-            root.right = insert(target, root.right, useAvlNode);
-        else if(target.compareTo(root.data) < 0)
-            root.left = insert(target, root.left, useAvlNode);
+        else if(targetNode.data.compareTo(root.data) > 0)
+            root.right = insert(targetNode, root.right);
+        else if(targetNode.data.compareTo(root.data) < 0)
+            root.left = insert(targetNode, root.left);
         else
             ; //we are ignoring the dupe
         return root;
