@@ -14,7 +14,6 @@ package bst;// bst.BinarySearchTree class
 // ******************ERRORS********************************
 // Throws util.UnderflowException as appropriate
 
-import avl.AvlNode;
 import util.UnderflowException;
 
 /**
@@ -50,13 +49,13 @@ public class BinarySearchTree<E extends Comparable<? super E>>
         } else if (target.compareTo(root.data) > 0) {
             root.right = remove(target, root.right);
         } else { //target is equal to root's data (removing root!!!)
-            if(root.left == null && root.right == null) { //case 1
+            if(root.left == null && root.right == null) { //case 1: both are null
                 root = null;
-            } else if(root.left == null || root.right == null) { //case 2
+            } else if(root.left == null || root.right == null) { //case 2: only one of them is null
                 root = root.left == null ? root.right : root.left;
-            } else { //case 3
-                root.data = findMin(root.right);
-                root.right = remove(root.data, root.right);
+            } else { //case 3: both are not null
+                root.data = findMin(root.right); //find the min from the right tree
+                root.right = remove(root.data, root.right); //remove the min from the right tree recursively
             }
         }
 
