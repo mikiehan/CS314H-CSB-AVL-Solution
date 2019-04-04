@@ -101,21 +101,33 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
     }
 
     public void checkBalance( ) {
-        checkBalance((AvlNode<E>)overallRoot);
+        checkBalance(overallRoot);
     }
 
-    private int checkBalance( AvlNode<E> t ) {
-        if( t == null )
+    //returns the calculated height given the current tree rooted at t
+    //when something is wrong (imbalanced, or the height calculation and
+    //the depth information stored at the node has mismatch), throws IllegalStateException
+    private int checkBalance(BinaryNode<E> t) {
+        //Implement me
+        if(t == null) {
             return -1;
-
-        if( t != null ) {
-            int hl = checkBalance((AvlNode<E>) t.left);
-            int hr = checkBalance((AvlNode<E>) t.right);
-            if( Math.abs( height( t.left ) - height( t.right ) ) > 1 ||
-                    height( t.left ) != hl || height( t.right ) != hr )
-                System.out.println( "OOPS!!" );
         }
-        return height( t );
+        int left_height = checkBalance(t.left);
+        int right_height = checkBalance(t.right);
+
+        if(Math.abs(left_height - right_height) > ALLOWED_IMBALANCE) {
+            throw new IllegalStateException("tree is imbalanced with left-height"
+                    + left_height + ", right-height " + right_height);
+        }
+        if(left_height != height(t.left)){
+            throw new IllegalStateException("left child does not have the correct depth "+
+                    "should be "+ left_height + "but it says " + height(t.left));
+        }
+        if(right_height != height(t.right)){
+            throw new IllegalStateException("right child does not have the correct depth "+
+                    "should be "+ right_height + "but it says " + height(t.right));
+        }
+        return Math.max(left_height, right_height) + 1 ; //Overwrite this code
     }
 
     @Override
