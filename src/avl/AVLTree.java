@@ -34,16 +34,16 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
     @Override
     protected BinaryNode<E> insert(BinaryNode<E> targetNode, BinaryNode<E> root) {
         root = super.insert(targetNode, root);
-        return balance((AvlNode<E>) root);
+        return balance(root);
     }
 
     @Override
     protected BinaryNode<E> remove(E target, BinaryNode<E> root) {
         root = super.remove(target, root);
-        return balance((AvlNode<E>) root);
+        return balance(root);
     }
 
-    private AvlNode<E> balance(AvlNode<E> root){
+    private BinaryNode<E> balance(BinaryNode<E> root){
         if(root == null) return root;
 
         //case 1 and 2 means left child is longer than the right child
@@ -66,45 +66,42 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
             }
         }
 
-        root.depth = Math.max( height(root.left), height(root.right)) + 1;
+        ((AvlNode<E>)root).depth = Math.max( height(root.left), height(root.right)) + 1;
         return root;
     }
 
     //case 1
-    private AvlNode<E> singleRotationWithLeftChild(AvlNode<E> k2){
+    private BinaryNode<E> singleRotationWithLeftChild(BinaryNode<E> k2){
         AvlNode<E> k1 = (AvlNode<E>) k2.left;
         k2.left = k1.right;
         k1.right = k2;
-        k2.depth = Math.max( height(k2.left), height(k2.right)) + 1;
-        k1.depth = Math.max( height(k1.left), k2.depth) + 1;
+        ((AvlNode<E>)k2).depth = Math.max( height(k2.left), height(k2.right)) + 1;
+        k1.depth = Math.max( height(k1.left), ((AvlNode<E>)k2).depth) + 1;
         return k1; //k1 is now promoted as root
     }
 
     //case 2
-    private AvlNode<E> doubleRotationWithLeftChild(AvlNode<E> k3) {
-        k3.left = singleRotationWithRightChild((AvlNode<E>) k3.left);
+    private BinaryNode<E> doubleRotationWithLeftChild(BinaryNode<E> k3) {
+        k3.left = singleRotationWithRightChild(k3.left);
         return singleRotationWithLeftChild(k3); //Implement your method here
     }
 
     //case 3
-    private AvlNode<E> doubleRotationWithRightChild(AvlNode<E> k1) {
-        k1.right = singleRotationWithLeftChild((AvlNode<E>) k1.right);
+    private BinaryNode<E> doubleRotationWithRightChild(BinaryNode<E> k1) {
+        k1.right = singleRotationWithLeftChild(k1.right);
         return singleRotationWithRightChild(k1);
     }
 
     //case 4
-    private AvlNode<E> singleRotationWithRightChild(AvlNode<E> k1){
+    private BinaryNode<E> singleRotationWithRightChild(BinaryNode<E> k1){
         AvlNode<E> k2 = (AvlNode<E>) k1.right;
         k1.right = k2.left;
         k2.left = k1;
-
-        k1.depth = Math.max( height(k1.left), height(k1.right)) + 1;
+        ((AvlNode<E>)k1).depth = Math.max( height(k1.left), height(k1.right)) + 1;
 //        k2.depth = Math.max( height(k2.left), height(k2.right)) + 1;
-        k2.depth = Math.max( k1.depth, height(k2.right) ) + 1;
+        k2.depth = Math.max( ((AvlNode<E>)k1).depth, height(k2.right) ) + 1;
         return k2; //k2 is now promoted as root
     }
-
-
 
     public void checkBalance( ) {
         checkBalance(overallRoot);
