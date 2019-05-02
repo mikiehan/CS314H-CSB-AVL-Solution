@@ -70,6 +70,7 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
         return root;
     }
 
+    //case 1
     private AvlNode<E> singleRotationWithLeftChild(AvlNode<E> k2){
         AvlNode<E> k1 = (AvlNode<E>) k2.left;
         k2.left = k1.right;
@@ -79,6 +80,19 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
         return k1; //k1 is now promoted as root
     }
 
+    //case 2
+    private AvlNode<E> doubleRotationWithLeftChild(AvlNode<E> k3) {
+        k3.left = singleRotationWithRightChild((AvlNode<E>) k3.left);
+        return singleRotationWithLeftChild(k3); //Implement your method here
+    }
+
+    //case 3
+    private AvlNode<E> doubleRotationWithRightChild(AvlNode<E> k1) {
+        k1.right = singleRotationWithLeftChild((AvlNode<E>) k1.right);
+        return singleRotationWithRightChild(k1);
+    }
+
+    //case 4
     private AvlNode<E> singleRotationWithRightChild(AvlNode<E> k1){
         AvlNode<E> k2 = (AvlNode<E>) k1.right;
         k1.right = k2.left;
@@ -90,15 +104,7 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
         return k2; //k2 is now promoted as root
     }
 
-    private AvlNode<E> doubleRotationWithLeftChild(AvlNode<E> k3) {
-        k3.left = singleRotationWithRightChild((AvlNode<E>) k3.left);
-        return singleRotationWithLeftChild(k3); //Implement your method here
-    }
 
-    private AvlNode<E> doubleRotationWithRightChild(AvlNode<E> k1) {
-        k1.right = singleRotationWithLeftChild((AvlNode<E>) k1.right);
-        return singleRotationWithRightChild(k1);
-    }
 
     public void checkBalance( ) {
         checkBalance(overallRoot);
