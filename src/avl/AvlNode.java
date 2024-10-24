@@ -3,7 +3,7 @@ package avl;
 import bst.BinaryNode;
 
 public class AvlNode<E> extends BinaryNode<E> {
-    public int depth;
+    public int height;
 
     //Implement this class
     public AvlNode(E data){
@@ -14,8 +14,8 @@ public class AvlNode<E> extends BinaryNode<E> {
         this(data, left, right, 0);
     }
 
-    public AvlNode(E data, AvlNode<E> left, AvlNode<E> right, int depth){
+    public AvlNode(E data, AvlNode<E> left, AvlNode<E> right, int height){
         super(data, left, right);
-        this.depth = depth;
+        this.height = height;
     }
 }

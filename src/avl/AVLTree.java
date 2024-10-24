@@ -66,40 +66,94 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
             }
         }
 
-        ((AvlNode<E>)root).depth = Math.max( height(root.left), height(root.right)) + 1;
+        ((AvlNode<E>)root).height = Math.max( height(root.left), height(root.right)) + 1;
         return root;
     }
 
-    //case 1
+    //case 1: "lift" k1 up
+    //        k2
+    //        / \
+    //      k1   Z
+    //     / \
+    //    X   Y
     private BinaryNode<E> singleRotationWithLeftChild(BinaryNode<E> k2){
         AvlNode<E> k1 = (AvlNode<E>) k2.left;
-        k2.left = k1.right;
-        k1.right = k2;
-        ((AvlNode<E>)k2).depth = Math.max( height(k2.left), height(k2.right)) + 1;
-        k1.depth = Math.max( height(k1.left), ((AvlNode<E>)k2).depth) + 1;
+        k2.left = k1.right; //move "Y" to k2's left (this preserves BST property)
+        k1.right = k2; //lift k1 will result in k2 dropping to k1's right
+
+        //         k1
+        //        /  \
+        //       X   k2
+        //           / \
+        //          Y   Z
+
+        //update height
+        ((AvlNode<E>)k2).height = Math.max(height(k2.left), height(k2.right)) + 1;
+        k1.height = Math.max(height(k1.left), ((AvlNode<E>)k2).height) + 1;
         return k1; //k1 is now promoted as root
     }
 
-    //case 2
+    //case 2: "lift" k2 up twice
+    //   k3
+    //   /
+    //  k1
+    //    \
+    //    k2
     private BinaryNode<E> doubleRotationWithLeftChild(BinaryNode<E> k3) {
-        k3.left = singleRotationWithRightChild(k3.left);
-        return singleRotationWithLeftChild(k3); //Implement your method here
+        k3.left = singleRotationWithRightChild(k3.left); //this will "lift" k2 up
+        // Now tree would look like this
+        //      k3
+        //     /
+        //    k2
+        //    /
+        //  k1
+        return singleRotationWithLeftChild(k3); //this will "lift" k2 up
+        // Now tree would look like this
+        //       k2
+        //     /   \
+        //    k1    k3
     }
 
     //case 3
+    //    k1
+    //      \
+    //       k3
+    //      /
+    //    k2
     private BinaryNode<E> doubleRotationWithRightChild(BinaryNode<E> k1) {
-        k1.right = singleRotationWithLeftChild(k1.right);
-        return singleRotationWithRightChild(k1);
+        k1.right = singleRotationWithLeftChild(k1.right); //lift k2 up
+        //     k1
+        //      \
+        //       k2
+        //        \
+        //         k3
+        return singleRotationWithRightChild(k1); //lift k2 up again
+        //     k2
+        //    /  \
+        //   k1   k3
     }
 
-    //case 4
+    //case 4: "lift" k2 up
+    //        k1
+    //        / \
+    //       X   k2
+    //          / \
+    //         Y   Z
+
     private BinaryNode<E> singleRotationWithRightChild(BinaryNode<E> k1){
         AvlNode<E> k2 = (AvlNode<E>) k1.right;
-        k1.right = k2.left;
-        k2.left = k1;
-        ((AvlNode<E>)k1).depth = Math.max( height(k1.left), height(k1.right)) + 1;
-//        k2.depth = Math.max( height(k2.left), height(k2.right)) + 1;
-        k2.depth = Math.max( ((AvlNode<E>)k1).depth, height(k2.right) ) + 1;
+        k1.right = k2.left; //Y becomes the right child of k1
+        k2.left = k1; //lifting "k2" will make k1 drop as k2's left child
+
+        //         k2
+        //        /  \
+        //       k1   Z
+        //      /  \
+        //     X    Y
+
+        //update height of k1 and Z
+        ((AvlNode<E>)k1).height = Math.max(height(k1.left), height(k1.right)) + 1;
+        k2.height = Math.max(((AvlNode<E>)k1).height, height(k2.right) ) + 1;
         return k2; //k2 is now promoted as root
     }
 
@@ -111,7 +165,6 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
     //when something is wrong (imbalanced, or the height calculation and
     //the depth information stored at the node has mismatch), throws IllegalStateException
     private int checkBalance(BinaryNode<E> t) {
-        //Implement me
         if(t == null) {
             return -1;
         }
@@ -133,8 +186,7 @@ public class AVLTree<E extends Comparable<? super E>> extends BinarySearchTree<E
         return Math.max(left_height, right_height) + 1 ; //Overwrite this code
     }
 
-    @Override
-    protected int height(BinaryNode<E> root) {
-        return root == null ? -1 : ((AvlNode<E>)root).depth;
+    private int height(AvlNode<E> root) {
+        return root == null ? -1 : root.height;
     }
 }
